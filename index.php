@@ -4,13 +4,23 @@ require "Resolver.php";
 
 $resolver = null;
 $result = '';
+$original = '';
 
 if (isset($_POST['tweet'])) {
+	$original = $_POST['tweet'];
 	$resolver = new Resolver();
-	$resolver->process($_POST['tweet']);
+	$resolver->process($original);
+
 	$result = implode('', array_map(function (Token $t) {
-		return $t->str;
+		return ($t instanceof WordToken) ? $t->options[0] : $t->str;
 	}, $resolver->tokens));
+
+	$origlen = mb_strlen($original);
+	if($origlen!=0) {
+		$reduction = number_format(((mb_strlen($original) - mb_strlen($result)) / mb_strlen($original)) * 100, 1, '.', '');
+	} else {
+		$reduction = '0.0';
+	}
 }
 
 function e($s)
@@ -69,7 +79,7 @@ function e($s)
 			<div class="Box output">
 				<div class="Label">Result</div>
 				<textarea name="result" id="result" rows=5><?= e($result) ?></textarea> <!-- actual result -->
-				<div class="Length"><?= mb_strlen($result) . '/140' ?></div>
+				<div class="Length"><span id="disp-len"><?=  mb_strlen($result) ?></span>/140 (removed <span><?= $reduction ?> %</span>)</div>
 			</div>
 
 		<?php endif; ?>
