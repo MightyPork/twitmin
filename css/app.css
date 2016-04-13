@@ -317,4 +317,83 @@ html {
 .hidden {
   display: none; }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #1358B0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0; }
+
+.OuterWrap {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center; }
+
+.Container {
+  width: 700px;
+  max-width: 100%;
+  padding: 1rem;
+  margin: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  color: white; }
+  @media screen and (max-width: 1000px) {
+    .Container {
+      padding: 0.6180469716rem; } }
+  .Container h1 {
+    margin: 0;
+    padding: 0 0 1rem 0; }
+  .Container .Box {
+    border-radius: 2px;
+    padding: 0.6180469716rem;
+    margin-bottom: 0.6180469716rem;
+    background: rgba(255, 255, 255, 0.1); }
+    @media screen and (max-width: 544px) {
+      .Container .Box {
+        margin-bottom: 0.3819820591rem; } }
+    .Container .Box:last-child {
+      margin-bottom: 0 !important; }
+    .Container .Box .Label {
+      position: relative;
+      font-weight: bold;
+      display: block;
+      margin: 0.3819820591rem 0; }
+      .Container .Box .Label:first-child {
+        margin-top: 0; }
+      .Container .Box .Label .help {
+        font-weight: normal;
+        font-size: 70%;
+        position: absolute;
+        right: 0;
+        bottom: 0.1459102934rem; }
+    .Container .Box textarea {
+      border: 0;
+      background: #1358B0;
+      color: white;
+      padding: 0.3819820591rem;
+      display: block;
+      width: 100%;
+      resize: vertical; }
+    .Container .Box select {
+      color: initial; }
+    .Container .Box .Length {
+      margin-top: 0.3819820591rem;
+      text-align: right; }
+      .Container .Box .Length.over {
+        color: red; }
+
 /*# sourceMappingURL=app.css.map */
