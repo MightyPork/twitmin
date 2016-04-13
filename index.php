@@ -6,7 +6,7 @@ $resolver = null;
 $result = '';
 $original = '';
 
-if (isset($_POST['tweet'])) {
+if (isset($_POST['tweet']) && $_POST['tweet'] !== '') {
 	$original = $_POST['tweet'];
 	$resolver = new Resolver();
 	$resolver->process($original);
