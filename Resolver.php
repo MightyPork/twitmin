@@ -1,6 +1,9 @@
 <?php
 
 
+/**
+ * Tweet token. Token is a part of the tweet with some meaning.
+ */
 abstract class Token
 {
 	public $str;
@@ -19,8 +22,13 @@ abstract class Token
 }
 
 
+/**
+ * Word token. Represents a single word, or a phrase.
+ * Can be minified.
+ */
 class WordToken extends Token
 {
+	/** @var string available substitutions */
 	public $options;
 
 	public function __construct($str)
@@ -33,6 +41,11 @@ class WordToken extends Token
 }
 
 
+/**
+ * Whitespace / punctuation token.
+ * This token should be left alone, as it can contain emojis and other strange stuff.
+ * Newlines and spaces are normalized at creation.
+ */
 class FillerToken extends Token
 {
 	public function __construct($str)
@@ -46,6 +59,10 @@ class FillerToken extends Token
 }
 
 
+/**
+ * Special token representing a #hashtag, @handle or a URL.
+ * The content must be left exactly as is.
+ */
 class SpecialToken extends Token
 {
 	public $length;
@@ -59,34 +76,11 @@ class SpecialToken extends Token
 }
 
 
+/**
+ * Tweet parser & minifier. This is the main class of TwitMin.
+ */
 class Resolver
 {
-	private $phrases = [
-		'you all',
-		'i am',
-		'it is',
-		'is not',
-		'are not',
-		'am not',
-		'it will',
-		'you are',
-		'fuck you',
-		'you will',
-		'i will',
-		'new york',
-		'european union',
-		'united states',
-		'new zealand',
-		'united kingdom',
-		'see you',
-		'bye bye',
-		'what the fuck',
-		'cell phone',
-		'going to',
-		'want to',
-		"don't know",
-	];
-
 	private $alternatives = [
 		"don't know" => ['dunno'],
 		'very' => ['v'],
@@ -228,7 +222,11 @@ class Resolver
 
 	private function combinePhrases()
 	{
-		foreach ($this->phrases as $phrase) {
+		$phr = array_filter($this->alternatives, function($a) {
+			return (strpos($a, ' ') !== false);
+		}, ARRAY_FILTER_USE_KEY);
+
+		foreach (array_keys($phr) as $phrase) {
 			$words = explode(' ', $phrase);
 			$new_toks = [];
 			$ticks = 0;
@@ -247,14 +245,12 @@ class Resolver
 				do { // once
 					if ($next_space) {
 						if (!($t instanceof FillerToken)) {
-							//echo "FIALTOK";
 							$buffered[] = $t;
 							$want_reset = true;
 							break;
 						}
 
 						if (trim($t->str) === '') {
-							//echo "FILLER_OK ";
 							$next_space = false;
 							$ticks++;
 							$buffered[] = $t;
@@ -269,8 +265,6 @@ class Resolver
 							$ticks++;
 							$w_idx++;
 							$buffered[] = $t;
-
-							//echo "MATCH! ";
 
 							if ($w_idx >= count($words)) {
 								// we found a match

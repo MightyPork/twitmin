@@ -53,7 +53,7 @@ function e($s)
 		<?php if ($resolver): ?>
 
 			<div class="Box output">
-				<div class="Label">Output  <span class="lbl-right" id="copy-btn">COPY</span></div>
+				<div class="Label">Output  <span class="lbl-right"><span class="btn" id="tweet-btn">TWEET</span> | <span class="btn" id="copy-btn">COPY</span></div>
 				<div class="Output">
 					<?php
 					foreach ($resolver->tokens as $i => $tok) {

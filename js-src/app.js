@@ -104,23 +104,39 @@ var twitmin = (function() {
 			}
 
 			$('.WordAlts').on('mouseenter', function() {
-				clearTimeout($(this).closest('.Word').data('altTmeo'));
+				clearTimeout($(this).closest('.Word').data('altTmeoHide'));
+				clearTimeout($(this).closest('.Word').data('altTmeoHide2'));
 			}).on('mouseleave', function() {
 				var self = this;
-				setTimeout(function(){
+				var id = setTimeout(function(){
 					$(self).addClass('hidden');
 				}, 500);
+				$(this).closest('.Word').data('altTmeoHide2', id);
 			});
 
 			$('.Word').on('mouseenter', function() {
 				var self = this;
-				clearTimeout($(this).data('altTmeo'));
-				var id = setTimeout(function(){
-					showAltsFor(self);
-				}, 250);
-				$(this).data('altTmeo', id);
+				var $alts = $(self).find('.WordAlts');
+
+				clearTimeout($(this).data('altTmeoHide'));
+				clearTimeout($(this).data('altTmeoHide2'));
+
+				if ($alts.hasClass('hidden')) {
+					var id = setTimeout(function () {
+						showAltsFor(self);
+					}, 250);
+					$(this).data('altTmeoShow', id);
+				}
 			}).on('mouseleave', function() {
-				clearTimeout($(this).data('altTmeo'));
+				clearTimeout($(this).data('altTmeoShow'));
+				var self = this;
+				var $alts = $(self).find('.WordAlts');
+				if (!$alts.hasClass('hidden')) {
+					var id = setTimeout(function () {
+						$alts.addClass('hidden')
+					}, 500);
+					$(this).data('altTmeoHide', id);
+				}
 			});
 
 			$('.WordAlt').on('click', function() {
@@ -141,6 +157,10 @@ var twitmin = (function() {
 
 		$('#copy-btn').on('click', function() {
 			copyToClipboard(tm.fulltext);
+		});
+
+		$('#tweet-btn').on('click', function() {
+			location.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tm.fulltext);
 		});
 
 		// update counter
