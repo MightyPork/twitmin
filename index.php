@@ -36,6 +36,11 @@ function e($s)
 	<link rel="stylesheet" href="css/app.css">
 	<script src="js/libs.js"></script>
 	<script src="js/app.js"></script>
+
+	<!--
+	Contribute on GitHub!
+	github.com/MightyPork/twitmin
+	-->
 </head>
 <body>
 
