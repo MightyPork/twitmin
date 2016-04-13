@@ -144,7 +144,9 @@ var twitmin = (function() {
 		});
 
 		// update counter
-		updateCharCount();
+		if (twitmin.tokens) {
+			updateCharCount();
+		}
 	};
 
 	return tm;

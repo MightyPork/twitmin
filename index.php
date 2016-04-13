@@ -70,10 +70,10 @@ function e($s)
 								echo "</span>";//alts
 								echo "</span>";
 							} else {
-								echo e($tok->str);
+								echo nl2br(e($tok->str));
 							}
 						} else {
-							echo e($tok->str);
+							echo nl2br(e($tok->str));
 						}
 					}
 					?>
@@ -84,15 +84,17 @@ function e($s)
 					<span id="rightside-leninfo">(removed <span id="disp-abs"></span> chars - <span id="disp-perc"></span> %)</span>
 				</div>
 			</div>
-
-			<script>
-				twitmin.totalLen = <?= mb_strlen($original) ?>;
-				twitmin.tokens = <?= json_encode($resolver->tokens) ?>;
-
-				twitmin.init();
-			</script>
 		<?php endif; ?>
 	</div>
 </div>
+
+<script>
+	<?php if ($resolver): ?>
+	twitmin.totalLen = <?= mb_strlen($original) ?>;
+	twitmin.tokens = <?= json_encode($resolver->tokens) ?>;
+	<?php endif; ?>
+
+	twitmin.init();
+</script>
 </body>
 </html>

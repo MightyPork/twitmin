@@ -37,7 +37,8 @@ class FillerToken extends Token
 {
 	public function __construct($str)
 	{
-		$str = preg_replace('/\s+/', ' ', $str);
+		$str = preg_replace('/[ ]{2,}/', ' ', $str);
+		$str = preg_replace('/[ ]+\n/m', "\n", $str);
 
 		parent::__construct($str);
 		$this->type = "fill";
@@ -89,6 +90,7 @@ class Resolver
 	private $alternatives = [
 		"don't know" => ['dunno'],
 		'very' => ['v'],
+		'at' => ['@'],
 		'please' => ['pls'],
 		'though' => ['tho'],
 		'through' => ['thru'],
@@ -185,6 +187,7 @@ class Resolver
 	{
 		// conditioning
 		$tweet = trim($tweet);
+		$tweet = preg_replace("/\r\n/", "\n", $tweet);
 		$tweet = str_replace('...', '…', $tweet);
 
 		setlocale(LC_CTYPE, 'EN_us.UTF-8');
