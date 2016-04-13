@@ -92,6 +92,8 @@ class Resolver
 		'please' => ['pls'],
 		'though' => ['tho'],
 		'through' => ['thru'],
+		'congratulations' => ['gratz'],
+		'congrats' => ['gratz'],
 		'you' => ['u', 'yo'],
 		'your' => ['yo', 'ur'],
 		'before' => ['be4'],

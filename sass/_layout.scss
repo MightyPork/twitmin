@@ -9,6 +9,8 @@ html, body {
 	background: #1358B0;
 
 	@include fullsize;
+
+	line-height: 1.1;
 }
 
 .OuterWrap {
@@ -36,11 +38,11 @@ html, body {
 	color: white;
 
 	h1 {
+		@include noselect;
 		margin: 0; padding: 0 0 dist(0) 0;
 	}
 
 	.Box {
-		overflow:hidden;
 		border-radius: 2px;
 		padding: dist(-1);
 		margin-bottom: dist(-1);
@@ -53,6 +55,8 @@ html, body {
 		background: rgba(white, .1);
 
 		.Label {
+			@include noselect;
+
 			position: relative;
 			font-weight: bold;
 			display: block;
@@ -61,7 +65,7 @@ html, body {
 				margin-top: 0;
 			}
 
-			.help {
+			.lbl-right {
 				font-weight: normal;
 				font-size: 70%;
 				position: absolute;
@@ -81,17 +85,105 @@ html, body {
 			resize: vertical;
 		}
 
-		select {
-			color: initial;
-		}
-
 		.Length {
 			margin-top: dist(-2);
-			text-align: right;
+			text-align: left;
+			position: relative;
 
 			&.over {
 				color: red;
 			}
+
+			#rightside-leninfo {
+				position: absolute;
+				right: 0;
+			}
 		}
+	}
+}
+
+
+.Output {
+	background: #123a74;
+	padding: dist(-2);
+
+	color: rgba(white,.8);
+
+	.Word {
+		color: deepskyblue;
+		text-decoration: underline;
+		position: relative;
+
+		cursor: pointer;
+
+		&:hover {
+			color: #30ccff;
+		}
+	}
+
+	.WordAlts {
+		@include noselect;
+
+		position: absolute;
+
+		min-width: 4em;
+		z-index:100;
+
+		$bg: deepskyblue;
+
+		left: 50%;
+		@include fix-chrome-translate-blur(translate(-50%,0));
+
+		top: 1.6em;
+		background: $bg;
+		color: white;
+		padding: dist(-2) 0;
+		border-radius: 4px;
+
+		box-shadow: 0 0 10px rgba(black,.5);
+
+		&:before {
+			display: block;
+			content:'';
+
+			width: 0;
+			height: 0;
+			$w: 5px;
+			$h: 5px;
+			border-left: $w solid transparent;
+			border-right: $w solid transparent;
+			border-bottom: $h solid $bg;
+
+			position: absolute;
+			top: -$h;
+			left: calc(50% - #{$w});
+		}
+
+		.WordAlt {
+			display: block;
+			padding: dist(-3) dist(-2);
+			cursor: pointer;
+			text-align: center;
+
+			&:hover {
+				background: white;
+				color: deepskyblue;
+			}
+		}
+	}
+}
+
+#copy-btn {
+	@include noselect;
+	font-weight: bold;
+	color: #81d2ff;
+	cursor: pointer;
+
+	&:hover {
+		color: deepskyblue;
+	}
+
+	&:active {
+		margin-bottom: -1px;
 	}
 }

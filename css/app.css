@@ -326,7 +326,8 @@ html, body {
   left: 0;
   top: 0;
   bottom: 0;
-  right: 0; }
+  right: 0;
+  line-height: 1.1; }
 
 .OuterWrap {
   width: 100%;
@@ -355,10 +356,14 @@ html, body {
     .Container {
       padding: 0.6180469716rem; } }
   .Container h1 {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     margin: 0;
     padding: 0 0 1rem 0; }
   .Container .Box {
-    overflow: hidden;
     border-radius: 2px;
     padding: 0.6180469716rem;
     margin-bottom: 0.6180469716rem;
@@ -369,13 +374,18 @@ html, body {
     .Container .Box:last-child {
       margin-bottom: 0 !important; }
     .Container .Box .Label {
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
       position: relative;
       font-weight: bold;
       display: block;
       margin: 0.3819820591rem 0; }
       .Container .Box .Label:first-child {
         margin-top: 0; }
-      .Container .Box .Label .help {
+      .Container .Box .Label .lbl-right {
         font-weight: normal;
         font-size: 70%;
         position: absolute;
@@ -389,12 +399,77 @@ html, body {
       display: block;
       width: 100%;
       resize: vertical; }
-    .Container .Box select {
-      color: initial; }
     .Container .Box .Length {
       margin-top: 0.3819820591rem;
-      text-align: right; }
+      text-align: left;
+      position: relative; }
       .Container .Box .Length.over {
         color: red; }
+      .Container .Box .Length #rightside-leninfo {
+        position: absolute;
+        right: 0; }
+
+.Output {
+  background: #123a74;
+  padding: 0.3819820591rem;
+  color: rgba(255, 255, 255, 0.8); }
+  .Output .Word {
+    color: deepskyblue;
+    text-decoration: underline;
+    position: relative;
+    cursor: pointer; }
+    .Output .Word:hover {
+      color: #30ccff; }
+  .Output .WordAlts {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: absolute;
+    min-width: 4em;
+    z-index: 100;
+    left: 50%;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -webkit-transform: translateZ(0) scale(1, 1) translate(-50%, 0);
+    top: 1.6em;
+    background: deepskyblue;
+    color: white;
+    padding: 0.3819820591rem 0;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+    .Output .WordAlts:before {
+      display: block;
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid deepskyblue;
+      position: absolute;
+      top: -5px;
+      left: calc(50% - 5px); }
+    .Output .WordAlts .WordAlt {
+      display: block;
+      padding: 0.2360828548rem 0.3819820591rem;
+      cursor: pointer;
+      text-align: center; }
+      .Output .WordAlts .WordAlt:hover {
+        background: white;
+        color: deepskyblue; }
+
+#copy-btn {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-weight: bold;
+  color: #81d2ff;
+  cursor: pointer; }
+  #copy-btn:hover {
+    color: deepskyblue; }
+  #copy-btn:active {
+    margin-bottom: -1px; }
 
 /*# sourceMappingURL=app.css.map */
