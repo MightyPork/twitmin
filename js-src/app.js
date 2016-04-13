@@ -21,6 +21,8 @@ var twitmin = (function() {
 		$('#disp-len').text(len);
 		$('#disp-abs').text(total-len);
 		$('#disp-perc').text(Math.round(((total-len)/total)*1000)/10);
+
+		$('#disp-len').toggleClass('over', len>140);
 	}
 
 	function copyToClipboard(string) {

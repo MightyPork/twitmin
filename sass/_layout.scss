@@ -90,8 +90,8 @@ html, body {
 			text-align: left;
 			position: relative;
 
-			&.over {
-				color: red;
+			.over {
+				color: #ff82aa;
 			}
 
 			#rightside-leninfo {
@@ -132,7 +132,7 @@ html, body {
 		$bg: deepskyblue;
 
 		left: 50%;
-		@include fix-chrome-translate-blur(translate(-50%,0));
+		transform: translate(-50%,0);
 
 		top: 1.6em;
 		background: $bg;
@@ -165,6 +165,8 @@ html, body {
 			cursor: pointer;
 			text-align: center;
 
+			@include nowrap;
+
 			&:hover {
 				background: white;
 				color: deepskyblue;
@@ -178,12 +180,13 @@ html, body {
 	font-weight: bold;
 	color: #81d2ff;
 	cursor: pointer;
+	position: relative;
 
 	&:hover {
 		color: deepskyblue;
 	}
 
 	&:active {
-		margin-bottom: -1px;
+		top: 1px;
 	}
 }

@@ -33,7 +33,7 @@
 	word-wrap: normal;
 }
 
-@mixin fix-chrome-translate-blur($xtra) {
+@mixin fix-chrome-translate-blur($xtra:null) {
 	// hack to remove blur in chrome
 	-webkit-font-smoothing: subpixel-antialiased;
 	-webkit-transform: translateZ(0) scale(1.0, 1.0) $xtra;

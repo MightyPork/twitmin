@@ -168,6 +168,8 @@ class Resolver
 		'really' => ["rly"],
 		'microsoft' => ["M$"],
 		'cell phone' => ["phone"],
+		'until' => ["til"],
+		'because' => ["cuz"],
 	];
 
 	/** @var Token[] */
@@ -222,6 +224,8 @@ class Resolver
 
 	private function combinePhrases()
 	{
+		// FIXME this is really slow
+
 		$phr = array_filter($this->alternatives, function($a) {
 			return (strpos($a, ' ') !== false);
 		}, ARRAY_FILTER_USE_KEY);
@@ -268,7 +272,13 @@ class Resolver
 
 							if ($w_idx >= count($words)) {
 								// we found a match
-								$new_toks[] = new WordToken($phrase); // TODO adjust capitalisation
+
+								// collect original
+								$original = array_reduce($buffered, function($carry, $x) {
+									return $carry . $x->str;
+								}, '');
+
+								$new_toks[] = new WordToken($original);
 								$buffered = [];
 								$want_reset = true;
 								break;
@@ -308,6 +318,26 @@ class Resolver
 		}
 	}
 
+	/** change case to match template (where possible) */
+	private static function adjustCase($alts, $str)
+	{
+		if ($str == mb_strtoupper($str)) {
+			// all caps
+			return array_map('mb_strtoupper', $alts);
+		}
+
+		$first = mb_substr($str, 0, 1);
+		$second = mb_substr($str, 1, 1);
+		if (mb_strtoupper($first) == $first && mb_strtolower($second) == $second) {
+			// first is upper
+			return array_map(function($x) {
+				return mb_strtoupper(mb_substr($x, 0, 1)) . mb_substr($x, 1);
+			}, $alts);
+		}
+
+		return $alts;
+	}
+
 	private function makeShort()
 	{
 		foreach ($this->tokens as $i => $t) {
@@ -326,7 +356,8 @@ class Resolver
 				$search = mb_strtolower($t->str);
 
 				if (array_key_exists($search, $this->alternatives)) {
-					$t->options = array_merge($t->options, $this->alternatives[$search]);
+					$alts = $this->alternatives[$search];
+					$t->options = array_merge($t->options, self::adjustCase($alts, $t->str));
 				}
 			}
 		}
