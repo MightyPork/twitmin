@@ -12,17 +12,18 @@ var twitmin = (function() {
 				var n = _.isUndefined(t.altN)?0:t.altN;
 				len += t.options[n].length;
 				tm.fulltext += t.options[n];
+			} else if (t.type == 'special') {
+				len += t.length; // special length for links and such
+				tm.fulltext += t.str;
 			} else {
 				len += t.str.length;
 				tm.fulltext += t.str;
 			}
 		});
 
-		$('#disp-len').text(len);
+		$('#disp-len').text(140-len).toggleClass('over', len>140);
 		$('#disp-abs').text(total-len);
 		$('#disp-perc').text(Math.round(((total-len)/total)*1000)/10);
-
-		$('#disp-len').toggleClass('over', len>140);
 	}
 
 	function copyToClipboard(string) {

@@ -66,12 +66,16 @@ class FillerToken extends Token
 class SpecialToken extends Token
 {
 	public $length;
+	public $kind;
 
-	public function __construct($str)
+	public function __construct($str, $kind = null)
 	{
 		parent::__construct($str);
 		$this->type = "special";
+		$this->kind = $kind;
 		$this->length = mb_strlen($str);
+
+		if ($kind == 'url') $this->length = 23;
 	}
 }
 
@@ -108,6 +112,7 @@ class Resolver
 		'application' => "app",
 		'applications' => "apps",
 		'you are' => ["you're", "ur"],
+		"you're" => ["you're", "ur"],
 		'new york' => "NY",
 		'mate' => "m8",
 		'great' => "gr8",
@@ -143,6 +148,9 @@ class Resolver
 		"additions" => "extras",
 		"comfortable" => "comfy",
 		"why" => "y",
+		"into" => "in2",
+		"therefore" => "there4",
+		"whilst" => "while",
 		"you will" => ["you'll", "u'll"],
 		"i will" => ["I'll", "imma"],
 		'what the fuck' => "wtf",
@@ -167,6 +175,12 @@ class Resolver
 		'really' => "rly",
 		'microsoft' => "M$",
 		'people' => "ppl",
+		'everyone' => "every1",
+		'no-one' => "no1",
+		'character' => "char",
+		'characters' => "chars",
+		'integer' => "int",
+		'integers' => "ints",
 		'cell phone' => "phone",
 		'until' => "til",
 		'because' => "cuz",
@@ -214,6 +228,10 @@ class Resolver
 
 	/** @var Token[] */
 	public $tokens = [];
+	public $orig = null;
+	public $totalLength = 0;
+
+	private $linkLenAdjust;
 
 	private $wordbuf = '';
 
@@ -224,6 +242,9 @@ class Resolver
 		// conditioning
 		$tweet = trim($tweet);
 		$tweet = preg_replace("/\r\n/", "\n", $tweet);
+
+		$this->orig = $tweet;
+
 		$tweet = str_replace('...', '…', $tweet);
 
 		setlocale(LC_CTYPE, 'EN_us.UTF-8');
@@ -242,9 +263,7 @@ class Resolver
 				case 'hash':
 				case 'url':
 				case 'handle':
-					$t = new SpecialToken($this->wordbuf);
-					if ($this->coll == 'url') $t->length = 23; // https://t.co/0123456789
-					$this->addToken($t);
+					$this->addToken(new SpecialToken($this->wordbuf, $this->coll));
 					break;
 
 				case 'junk':
@@ -260,6 +279,8 @@ class Resolver
 		$this->combinePhrases();
 		$this->findAlternatives();
 		$this->makeShort();
+
+		$this->totalLength = mb_strlen($this->orig) - $this->linkLenAdjust;
 	}
 
 	private function combinePhrases()
@@ -421,6 +442,10 @@ class Resolver
 			$this->tokens[] = $t;
 		}
 
+		if ($t instanceof SpecialToken) {
+			$this->linkLenAdjust += mb_strlen($t->str) - $t->length;
+		}
+
 		$this->endToken();
 	}
 
@@ -445,7 +470,7 @@ class Resolver
 		if (in_array($this->coll, ['hash', 'handle'])) {
 			if (!self::handleChar($ch)) {
 				// end of hashtag or name
-				$this->addToken(new SpecialToken($this->wordbuf));
+				$this->addToken(new SpecialToken($this->wordbuf, $this->coll));
 				return false;
 			} else {
 				$this->wordbuf .= $ch; // append it
@@ -455,7 +480,7 @@ class Resolver
 
 		if (in_array($this->coll, ['url'])) {
 			if (!self::urlChar($ch)) {
-				$this->addToken(new SpecialToken($this->wordbuf));
+				$this->addToken(new SpecialToken($this->wordbuf, $this->coll));
 				return false;
 			} else {
 				$this->wordbuf .= $ch; // append it
@@ -465,7 +490,7 @@ class Resolver
 
 		if (in_array($this->coll, ['email'])) {
 			if (!self::emailChar($ch)) {
-				$this->addToken(new SpecialToken($this->wordbuf));
+				$this->addToken(new SpecialToken($this->wordbuf, $this->coll));
 				return false;
 			} else {
 				$this->wordbuf .= $ch; // append it

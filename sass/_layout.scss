@@ -121,6 +121,13 @@ html, body {
 		}
 	}
 
+	.SpecialToken {
+		&,&:link,&:visited {
+			color: #77C7F7;
+			text-decoration: none;
+		}
+	}
+
 	.WordAlts {
 		@include noselect;
 
