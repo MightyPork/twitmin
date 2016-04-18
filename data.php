@@ -12,6 +12,8 @@ return [
 	"to be fair" => "tbf",
 	"to be honest" => "tbh",
 	"in my opinion" => "imo",
+	"never mind" => "nvm",
+	"the feeling when" => "tfw",
 	"in my honest opinion" => "imho",
 	"in my humble opinion" => "imho",
 	"if I remember correctly" => "iirc",
