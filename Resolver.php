@@ -116,13 +116,17 @@ class Resolver
 		$tweet = str_replace('...', '…', $tweet);
 
 		// blame @mvilcis
-		$tweet = preg_replace_callback('/((?:gnu\/|arch|\b)linux)(\s+)(is\s+bad|sucks(?:\s+dick|\s+balls)|\b)/im', function($m) {
+		$tweet = preg_replace_callback('/((?:gnu\/|arch|\b)linux)(\s+)(is\s+bad|sucks(\s+dick|\s+balls|))\b/im', function($m) {
+
+			print_r($m);
+
 			$linux = $m[1];
 			if (strtolower($linux) == 'linux') { // is literal "linux"
 				$linux = ($linux == 'LINUX') ? 'GNU/LINUX' : 'GNU/Linux'; // match case
 			}
 			$space = $m[2];
-			$isGr8 = (strtoupper($m[3]) == $m[3]) ? 'IS GREAT' : 'is great'; // match case
+			$isWhat = $m[3];
+			$isGr8 = (strtoupper($isWhat) == $isWhat) ? 'IS GREAT' : 'is great'; // match case
 			return $linux . $space . $isGr8;
 		}, $tweet);
 
