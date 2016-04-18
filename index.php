@@ -38,7 +38,11 @@ function e($s)
 
 <div class="OuterWrap">
 	<div class="Container">
-		<h1>Tweet Compressor</h1>
+		<h1 class="Title">Tweet Compressor
+			<a class="Contribute" href="https://github.com/MightyPork/twitmin">
+				<img src="img/github.svg" title="Contribute on GitHub!" alt="GitHub">
+			</a>
+		</h1>
 
 		<div class="Box input">
 			<form method="POST" id="tweet-form">

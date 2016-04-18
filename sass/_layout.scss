@@ -197,3 +197,44 @@ html, body {
 		top: 1px;
 	}
 }
+
+.Title {
+	position: relative;
+
+	.Contribute {
+		position: absolute;
+		right: 0;
+		bottom: .3em;
+
+		img {
+			height: .9em;
+			opacity: .7;
+		}
+
+		&:hover img {
+			opacity: 1;
+		}
+
+		&:active {
+			margin-bottom: -1px;
+		}
+	}
+}
+
+//
+//.Contribute {
+//	opacity: .6;
+//	font-size: 80%;
+//	text-align: center;
+//	font-style: italic;
+//
+//	a, a:link, a:visited {
+//		color: white;
+//		font-weight: bold;
+//		text-decoration: none;
+//	}
+//
+//	a:hover {
+//		text-decoration: underline;
+//	}
+//}
