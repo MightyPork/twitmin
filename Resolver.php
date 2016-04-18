@@ -117,9 +117,6 @@ class Resolver
 
 		// blame @mvilcis
 		$tweet = preg_replace_callback('/((?:gnu\/|arch|\b)linux)(\s+)(is\s+bad|sucks(\s+dick|\s+balls|))\b/im', function($m) {
-
-			print_r($m);
-
 			$linux = $m[1];
 			if (strtolower($linux) == 'linux') { // is literal "linux"
 				$linux = ($linux == 'LINUX') ? 'GNU/LINUX' : 'GNU/Linux'; // match case
