@@ -156,20 +156,24 @@ var twitmin = (function() {
 
 				updateCharCount();
 			});
-		});
 
-		$('#copy-btn').on('click', function() {
-			copyToClipboard(tm.fulltext);
-		});
+			$('#compress-btn').on('click', function() {
+				submitForm();
+			});
 
-		$('#tweet-btn').on('click', function() {
-			location.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tm.fulltext);
-		});
+			$('#copy-btn').on('click', function() {
+				copyToClipboard(tm.fulltext);
+			});
 
-		// update counter
-		if (twitmin.tokens) {
-			updateCharCount();
-		}
+			$('#tweet-btn').on('click', function() {
+				location.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tm.fulltext);
+			});
+
+			// update counter
+			if (twitmin.tokens) {
+				updateCharCount();
+			}
+		});
 	};
 
 	return tm;

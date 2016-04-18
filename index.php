@@ -6,9 +6,14 @@ $resolver = null;
 $result = '';
 $original = '';
 
+$ligatures = isset($_POST['ligatures']) ? !!$_POST['ligatures'] : false;
+
 if (isset($_POST['tweet']) && $_POST['tweet'] !== '') {
 	$resolver = new Resolver();
-	$resolver->process($_POST['tweet']);
+	$resolver->process($_POST['tweet'], [
+		// Options
+		'ligatures' => $ligatures
+	]);
 
 	$result = implode('', array_map(function (Token $t) {
 		return ($t instanceof WordToken) ? $t->options[0] : $t->str;
@@ -48,6 +53,11 @@ function e($s)
 			<form method="POST" id="tweet-form">
 				<label class="Label" for="tweet">Enter Your Tweet <span class="lbl-right">Submit with Enter</span></label>
 				<textarea name="tweet" id="tweet" rows=10><?= isset($_POST['tweet']) ? e($_POST['tweet']) : '' ?></textarea>
+				<div class="Options">
+					<input type="checkbox" value='1' name="ligatures" id="ligatures" <?=$ligatures?'checked':''?>>&nbsp;<!--
+					--><label for="ligatures">Ligatures</label>
+					<span class="lbl-right"><span class="btn" id="compress-btn">GO!</span></span>
+				</div>
 			</form>
 		</div>
 
@@ -71,7 +81,7 @@ function e($s)
 								echo "</span>";//alts
 								echo "</span>";
 							} else {
-								echo nl2br(e($tok->str));
+								echo nl2br(e($tok->options[0]));
 							}
 						} elseif ($tok instanceof SpecialToken) {
 							switch ($tok->kind) {

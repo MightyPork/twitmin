@@ -64,14 +64,14 @@ html, body {
 			&:first-child {
 				margin-top: 0;
 			}
+		}
 
-			.lbl-right {
-				font-weight: normal;
-				font-size: 70%;
-				position: absolute;
-				right: 0;
-				bottom: dist(-4);
-			}
+		.lbl-right {
+			font-weight: normal;
+			font-size: 70%;
+			position: absolute;
+			right: 0;
+			bottom: dist(-4);
 		}
 
 		textarea {
@@ -83,6 +83,11 @@ html, body {
 			display: block;
 			width: 100%;
 			resize: vertical;
+		}
+
+		.Options {
+			position: relative;
+			padding-top: dist(-2);
 		}
 
 		.Length {

@@ -85,7 +85,7 @@ class SpecialToken extends Token
  */
 class Resolver
 {
-	private $alternatives;
+	private static $alternatives = null;
 
 	/** @var Token[] */
 	public $tokens = [];
@@ -98,15 +98,63 @@ class Resolver
 
 	private $coll = null;
 
+	private static $ligatures = [
+		'...' => '…',
+		'AA' => 'Ꜳ',
+		'aa' => 'ꜳ',
+		'AE' => 'Æ',
+		'ae' => 'æ',
+		'AO' => 'Ꜵ',
+		'ao' => 'ꜵ',
+		'AU' => 'Ꜷ',
+		'au' => 'ꜷ',
+		'AV' => 'Ꜹ',
+		'av' => 'ꜹ',
+		'AY' => 'Ꜽ',
+		'ay' => 'ꜽ',
+		'DZ' => 'Ǳ',
+		'Dz' => 'ǲ',
+		'dz' => 'ǳ',
+		'DŽ' => 'Ǆ',
+		'Dž' => 'ǅ',
+		'dž' => 'ǆ',
+		'ffi' => 'ﬃ',
+		'ffl' => 'ﬄ',
+		'ff' => 'ﬀ',
+		'fi' => 'ﬁ',
+		'fl' => 'ﬂ',
+		'IJ' => 'Ĳ',
+		'ij' => 'ĳ',
+		'LJ' => 'Ǉ',
+		'Lj' => 'ǈ',
+		'lj' => 'ǉ',
+		'NJ' => 'Ǌ',
+		'Nj' => 'ǋ',
+		'nj' => 'ǌ',
+		'OE' => 'Œ',
+		'OO' => 'Ꝏ',
+		'oo' => 'ꝏ',
+		'ft' => 'ﬅ',
+		'ue' => 'ᵫ' //weird looking in twitter
+	];
+
 
 	public function __construct()
 	{
-		$this->alternatives = require('data.php');
+		if (self::$alternatives == null) {
+			self::$alternatives = require('data.php');
+		}
 	}
 
 
-	public function process($tweet)
+	public function process($tweet, $opts = [])
 	{
+		$opts = array_merge([
+			'noegg' => false,
+			'ligatures' => true,
+			'phrases' => true
+		], $opts);
+
 		// make sure mb_* work right (sort of)
 		setlocale(LC_CTYPE, 'EN_us.UTF-8');
 
@@ -116,21 +164,20 @@ class Resolver
 
 		$this->orig = $tweet;
 
-		// shorten ellipsis
-		$tweet = str_replace('...', '…', $tweet);
-
-		// *** Safeguards ***
-		// Blame @mvilcis. Thanks @freundTech for testing.
-		$tweet = preg_replace_callback('/((?:gnu\/|arch|\b)linux)(\s+)(is\s+(?:really\s+)?(?:bad|awful|terrible)|sucks(?:\s+dick|\s+balls|))\b/im', function($m) {
-			$linux = $m[1];
-			if (strtolower($linux) == 'linux') {
-				$linux = ($linux == 'LINUX') ? 'GNU/LINUX' : 'GNU/Linux';
-			}
-			$space = $m[2];
-			$isWhat = $m[3];
-			$isGr8 = (strtoupper($isWhat) == $isWhat) ? 'IS GREAT' : 'is great';
-			return $linux . $space . $isGr8;
-		}, $tweet);
+		if (!$opts['noegg']) {
+			// *** Safeguards ***
+			// Blame @mvilcis. Thanks @freundTech for testing.
+			$tweet = preg_replace_callback('/(\b(?:gnu\/|arch|)linux)(\s+)(is\s+(?:really\s+)?(?:bad|awful|terrible)|sucks(?:\s+dick|\s+balls|))\b/im', function ($m) {
+				$linux = $m[1];
+				if (strtolower($linux) == 'linux') {
+					$linux = ($linux == 'LINUX') ? 'GNU/LINUX' : 'GNU/Linux';
+				}
+				$space = $m[2];
+				$isWhat = $m[3];
+				$isGr8 = (strtoupper($isWhat) == $isWhat) ? 'IS GREAT' : 'is great';
+				return $linux . $space . $isGr8;
+			}, $tweet);
+		}
 
 		$chars = preg_split('//u', $tweet, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($chars as $ch) {
@@ -159,18 +206,39 @@ class Resolver
 			}
 		}
 
-		$this->combinePhrases();
+		if ($opts['phrases']) $this->combinePhrases();
 		$this->findAlternatives();
+
+		if ($opts['ligatures']) $this->applyLigatures();
+
 		$this->makeShort();
 
 		$this->totalLength = mb_strlen($this->orig) - $this->linkLenAdjust;
+	}
+
+	private function applyLigatures()
+	{
+		foreach ($this->tokens as &$tok) {
+			if ($tok instanceof WordToken) {
+				//echo get_class($tok)."\n";
+				foreach ($tok->options as $i => $opt) {
+					$opt = str_replace(array_keys(self::$ligatures), array_values(self::$ligatures), $opt);
+					$tok->options[$i] = $opt;
+					//echo $opt;
+				}
+
+				if (!in_array($tok->str, $tok->options)) {
+					$tok->options[] = $tok->str;
+				}
+			}
+		}
 	}
 
 	private function combinePhrases()
 	{
 		// FIXME this is really slow
 
-		$phr = array_filter($this->alternatives, function($a) {
+		$phr = array_filter(self::$alternatives, function($a) {
 			return (strpos($a, ' ') !== false);
 		}, ARRAY_FILTER_USE_KEY);
 
@@ -207,7 +275,7 @@ class Resolver
 					}
 
 					if ($t instanceof WordToken) {
-						//echo "WC! ";
+						//echo "word char! ";
 						if (mb_strtolower($t->str) == $words[$w_idx]) {
 							$next_space = true;
 							$ticks++;
@@ -262,7 +330,7 @@ class Resolver
 		}
 	}
 
-	/** change case to match template (where possible) */
+	/** Change case to match template (where possible) */
 	private static function adjustCase($alts, $str)
 	{
 		if ($str == mb_strtoupper($str)) {
@@ -282,6 +350,7 @@ class Resolver
 		return $alts;
 	}
 
+	/** Sort alternatives by length */
 	private function makeShort()
 	{
 		foreach ($this->tokens as $i => $t) {
@@ -293,14 +362,15 @@ class Resolver
 		}
 	}
 
+	/** Attach alternatives to words */
 	private function findAlternatives()
 	{
 		foreach ($this->tokens as $i => $t) {
 			if ($t instanceof WordToken) {
 				$search = mb_strtolower($t->str);
 
-				if (array_key_exists($search, $this->alternatives)) {
-					$alts = $this->alternatives[$search];
+				if (array_key_exists($search, self::$alternatives)) {
+					$alts = self::$alternatives[$search];
 					if (!is_array($alts)) $alts = [$alts];
 					$t->options = array_merge($t->options, self::adjustCase($alts, $t->str));
 				}
