@@ -1,6 +1,7 @@
 <?php
 
 return [
+	"linux" => "GNU/Linux",
 	"percent" => "%",
 	"percentage" => "%",
 	"is really bad" => "sucks",

@@ -318,7 +318,7 @@ class Resolver
 	}
 
 	private static function wordChar($ch) {
-		return ctype_alnum($ch) || in_array($ch, ['\'', '-']);
+		return ctype_alnum($ch) || in_array($ch, ['\'', '-', '/']);
 	}
 
 	private static function handleChar($ch) {
