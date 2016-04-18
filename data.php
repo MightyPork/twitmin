@@ -13,6 +13,7 @@ return [
 	"to be honest" => "tbh",
 	"in my opinion" => "imo",
 	"never mind" => "nvm",
+	"nevermind" => "nvm",
 	"the feeling when" => "tfw",
 	"in my honest opinion" => "imho",
 	"in my humble opinion" => "imho",

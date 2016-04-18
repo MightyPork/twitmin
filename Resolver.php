@@ -107,27 +107,30 @@ class Resolver
 
 	public function process($tweet)
 	{
-		// conditioning
+		// make sure mb_* work right (sort of)
+		setlocale(LC_CTYPE, 'EN_us.UTF-8');
+
+		// prepare the input
 		$tweet = trim($tweet);
 		$tweet = preg_replace("/\r\n/", "\n", $tweet);
 
 		$this->orig = $tweet;
 
+		// shorten ellipsis
 		$tweet = str_replace('...', '…', $tweet);
 
-		// blame @mvilcis
+		// *** Safeguards ***
+		// Blame @mvilcis. Thanks @freundTech for debugging.
 		$tweet = preg_replace_callback('/((?:gnu\/|arch|\b)linux)(\s+)(is\s+bad|sucks(\s+dick|\s+balls|))\b/im', function($m) {
 			$linux = $m[1];
-			if (strtolower($linux) == 'linux') { // is literal "linux"
-				$linux = ($linux == 'LINUX') ? 'GNU/LINUX' : 'GNU/Linux'; // match case
+			if (strtolower($linux) == 'linux') {
+				$linux = ($linux == 'LINUX') ? 'GNU/LINUX' : 'GNU/Linux';
 			}
 			$space = $m[2];
 			$isWhat = $m[3];
-			$isGr8 = (strtoupper($isWhat) == $isWhat) ? 'IS GREAT' : 'is great'; // match case
+			$isGr8 = (strtoupper($isWhat) == $isWhat) ? 'IS GREAT' : 'is great';
 			return $linux . $space . $isGr8;
 		}, $tweet);
-
-		setlocale(LC_CTYPE, 'EN_us.UTF-8');
 
 		$chars = preg_split('//u', $tweet, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($chars as $ch) {
