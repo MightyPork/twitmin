@@ -1,7 +1,17 @@
 <?php
 
 return [
+	"i have no idea" => 'I dunno',
+	"i got no idea" => 'I dunno',
+	"to be fair" => 'tbf',
+	"to be honest" => 'tbh',
+	"in my opinion" => 'imo',
+	"in my honest opinion" => 'imho',
+	"in my humble opinion" => 'imho',
+	"if I remember correctly" => 'iirc',
+	"if I recall correctly" => 'iirc',
 	"don't know" => 'dunno',
+	"come across" => 'encounter',
 	'at' => '@',
 	"let me" => 'lemme',
 	"re-tweet" => 'RT',
