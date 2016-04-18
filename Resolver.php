@@ -115,6 +115,17 @@ class Resolver
 
 		$tweet = str_replace('...', '…', $tweet);
 
+		// blame @mvilcis
+		$tweet = preg_replace_callback('/((?:gnu\/|arch|\b)linux)(\s+)((?:is\s+bad|sucks)(?:\s+dick|\s+balls|\b))/im', function($m) {
+			$linux = $m[1];
+			if (strtolower($linux) == 'linux') { // is literal "linux"
+				$linux = ($linux == 'LINUX') ? 'GNU/LINUX' : 'GNU/Linux'; // match case
+			}
+			$space = $m[2];
+			$isGr8 = (strtoupper($m[3]) == $m[3]) ? 'IS GREAT' : 'is great'; // match case
+			return $linux . $space . $isGr8;
+		}, $tweet);
+
 		setlocale(LC_CTYPE, 'EN_us.UTF-8');
 
 		$chars = preg_split('//u', $tweet, -1, PREG_SPLIT_NO_EMPTY);
