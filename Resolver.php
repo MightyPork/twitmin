@@ -121,7 +121,7 @@ class Resolver
 
 		// *** Safeguards ***
 		// Blame @mvilcis. Thanks @freundTech for testing.
-		$tweet = preg_replace_callback('/((?:gnu\/|arch|\b)linux)(\s+)(is\s+bad|sucks(\s+dick|\s+balls|))\b/im', function($m) {
+		$tweet = preg_replace_callback('/((?:gnu\/|arch|\b)linux)(\s+)(is\s+(?:really\s+)?(?:bad|awful|terrible)|sucks(?:\s+dick|\s+balls|))\b/im', function($m) {
 			$linux = $m[1];
 			if (strtolower($linux) == 'linux') {
 				$linux = ($linux == 'LINUX') ? 'GNU/LINUX' : 'GNU/Linux';

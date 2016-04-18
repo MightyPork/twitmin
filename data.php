@@ -54,7 +54,7 @@ return [
 	"application" => "app",
 	"applications" => "apps",
 	"you are" => ["you're", "ur"],
-	"you're" => ["ur"],
+	"you're" => ["ur", "u're"],
 	"new york" => "NY",
 	"mate" => "m8",
 	"great" => "gr8",
