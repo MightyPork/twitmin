@@ -1,8 +1,9 @@
 <?php
 
 return [
-	"i have no idea" => 'I dunno',
-	"i got no idea" => 'I dunno',
+	"i have no idea" => 'idk',
+	"i got no idea" => 'idk',
+	"i don't know" => "idk"
 	"to be fair" => 'tbf',
 	"to be honest" => 'tbh',
 	"in my opinion" => 'imo',
@@ -99,6 +100,7 @@ return [
 	'european union' => "EU",
 	'new zealand' => "NZ",
 	'united kingdom' => "UK",
+	'netherlands' => "NL",
 	'with' => "w/",
 	'without' => "w/o",
 	'little' => "lil",
