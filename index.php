@@ -52,7 +52,7 @@ function e($s)
 		<div class="Box input">
 			<form method="POST" id="tweet-form">
 				<label class="Label" for="tweet">Enter Your Tweet <span class="lbl-right">Submit with Enter</span></label>
-				<textarea name="tweet" id="tweet" rows=10><?= isset($_POST['tweet']) ? e($_POST['tweet']) : '' ?></textarea>
+				<textarea name="tweet" id="tweet" rows=10 autofocus><?= isset($_POST['tweet']) ? e($_POST['tweet']) : '' ?></textarea>
 				<div class="Options">
 					<input type="checkbox" value='1' name="ligatures" id="ligatures" <?=$ligatures?'checked':''?>>&nbsp;<!--
 					--><label for="ligatures">Ligatures</label>
