@@ -99,7 +99,6 @@ class Resolver
 	private $coll = null;
 
 	private static $ligatures = [
-		'...' => '…',
 		'AA' => 'Ꜳ',
 		'aa' => 'ꜳ',
 		'AE' => 'Æ',
@@ -161,8 +160,9 @@ class Resolver
 		// prepare the input
 		$tweet = trim($tweet);
 		$tweet = preg_replace("/\r\n/", "\n", $tweet);
-
 		$this->orig = $tweet;
+
+		$tweet = str_replace(["...", "->", "<-"], ["…", "→", "←"], $tweet);
 
 		if (!$opts['noegg']) {
 			// *** Safeguards ***
@@ -216,13 +216,18 @@ class Resolver
 		$this->totalLength = mb_strlen($this->orig) - $this->linkLenAdjust;
 	}
 
+	private function applyLigaturesDo($word)
+	{
+		return str_replace(array_keys(self::$ligatures), array_values(self::$ligatures), $word);
+	}
+
 	private function applyLigatures()
 	{
 		foreach ($this->tokens as &$tok) {
 			if ($tok instanceof WordToken) {
 				//echo get_class($tok)."\n";
 				foreach ($tok->options as $i => $opt) {
-					$opt = str_replace(array_keys(self::$ligatures), array_values(self::$ligatures), $opt);
+					$opt = $this->applyLigaturesDo($opt);
 					$tok->options[$i] = $opt;
 					//echo $opt;
 				}

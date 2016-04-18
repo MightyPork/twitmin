@@ -30,9 +30,9 @@ function e($s)
 <head>
 	<meta charset="UTF-8">
 	<title>Tweet Compressor</title>
-	<link rel="stylesheet" href="css/app-2.css">
+	<link rel="stylesheet" href="css/app-3.css">
 	<script src="js/libs-1.js"></script>
-	<script src="js/app-1.js"></script>
+	<script src="js/app-2.js"></script>
 
 	<!--
 	Contribute on GitHub!
