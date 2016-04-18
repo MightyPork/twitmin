@@ -177,6 +177,9 @@ html, body {
 			cursor: pointer;
 			text-align: center;
 
+			font-family: monospace;
+			font-size: 110%;
+
 			@include nowrap;
 
 			&:hover {
