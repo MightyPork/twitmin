@@ -11,15 +11,15 @@ elixir.config.publicPath='.';
 
 elixir(function (mix) {
 	// Compile CSS
-	mix.sass('sass/app.scss', 'css/app.css');
+	mix.sass('sass/app.scss', 'css/app-2.css');
 
 	// JS libs
 	mix.scripts([
 		'js-src/lib/lodash.custom.js',
 		'js-src/lib/jquery.js'
-	], 'js/libs.js');
+	], 'js/libs-1.js');
 
 	mix.scripts([
 		'js-src/app.js'
-	], 'js/app.js');
+	], 'js/app-1.js');
 });

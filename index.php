@@ -25,9 +25,9 @@ function e($s)
 <head>
 	<meta charset="UTF-8">
 	<title>Tweet Compressor</title>
-	<link rel="stylesheet" href="css/app.css">
-	<script src="js/libs.js"></script>
-	<script src="js/app.js"></script>
+	<link rel="stylesheet" href="css/app-2.css">
+	<script src="js/libs-1.js"></script>
+	<script src="js/app-1.js"></script>
 
 	<!--
 	Contribute on GitHub!
