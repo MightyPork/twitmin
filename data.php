@@ -13,6 +13,7 @@ return [
 	"why the fucking hell" => "ytfh",
 	"percentage" => "%",
 	"is really bad" => "sucks",
+	"apart from" => "besides",
 	"percentage" => "%",
 	"between" => "b/w",
 	"i have no idea" => "idk",
