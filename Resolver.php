@@ -133,6 +133,8 @@ class Resolver
 		'OE' => 'Œ',
 		'OO' => 'Ꝏ',
 		'oo' => 'ꝏ',
+		'Th' => 'Ћ',
+		'th' => 'ћ',
 		'ft' => 'ﬅ',
 		'ue' => 'ᵫ' //weird looking in twitter
 	];
