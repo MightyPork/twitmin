@@ -134,6 +134,8 @@ class Resolver
 		'OO' => 'Ꝏ',
 		'oo' => 'ꝏ',
 		'ft' => 'ﬅ',
+		', ' => '，',
+		'. ' => '．',
 		'ue' => 'ᵫ' //weird looking in twitter
 	];
 
