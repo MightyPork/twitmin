@@ -21,5 +21,5 @@ elixir(function (mix) {
 
 	mix.scripts([
 		'js-src/app.js'
-	], 'js/app-2.js');
+	], 'js/app-3.js');
 });

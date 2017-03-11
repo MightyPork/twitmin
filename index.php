@@ -36,7 +36,7 @@ function e($s) {
 	<title>Tweet Compressor</title>
 	<link rel="stylesheet" href="css/app-4.css">
 	<script src="js/libs-1.js"></script>
-	<script src="js/app-2.js"></script>
+	<script src="js/app-3.js"></script>
 
 	<!--
 	Contribute on GitHub!

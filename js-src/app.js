@@ -8,7 +8,7 @@ var twitmin = (function() {
 		tm.fulltext = '';
 
 		tm.tokens.forEach(function(t) {
-			if (t.type == 'word') {
+			if (t.type == 'word' || t.type == 'fill') {
 				var n = _.isUndefined(t.altN)?0:t.altN;
 				len += t.options[n].length;
 				tm.fulltext += t.options[n];
