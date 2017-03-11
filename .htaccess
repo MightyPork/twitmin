@@ -1,0 +1,3 @@
+RewriteRule ^.idea - [F,L]
+RewriteRule ^.git - [F,L]
+RewriteRule .*.sh - [F,L]
