@@ -11,7 +11,7 @@ elixir.config.publicPath='.';
 
 elixir(function (mix) {
 	// Compile CSS
-	mix.sass('sass/app.scss', 'css/app-3.css');
+	mix.sass('sass/app.scss', 'css/app-4.css');
 
 	// JS libs
 	mix.scripts([
