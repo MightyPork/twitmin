@@ -7,8 +7,10 @@
 abstract class Token
 {
 	public $str;
-
 	public $type;
+
+	/** @var string[] available substitutions */
+	public $options;
 
 	public function __construct($str)
 	{
@@ -28,14 +30,10 @@ abstract class Token
  */
 class WordToken extends Token
 {
-	/** @var string available substitutions */
-	public $options;
-
 	public function __construct($str)
 	{
 		parent::__construct($str);
 		$this->type = "word";
-
 		$this->options = [$str]; // TODO other options
 	}
 }
@@ -55,6 +53,7 @@ class FillerToken extends Token
 
 		parent::__construct($str);
 		$this->type = "fill";
+		$this->options = [$str];
 	}
 }
 
@@ -98,51 +97,15 @@ class Resolver
 
 	private $coll = null;
 
-	private static $ligatures = [
-		'AA' => 'Ꜳ',
-		'aa' => 'ꜳ',
-		'AE' => 'Æ',
-		'ae' => 'æ',
-		'AO' => 'Ꜵ',
-		'ao' => 'ꜵ',
-		'AU' => 'Ꜷ',
-		'au' => 'ꜷ',
-		'AV' => 'Ꜹ',
-		'av' => 'ꜹ',
-		'AY' => 'Ꜽ',
-		'ay' => 'ꜽ',
-		'DZ' => 'Ǳ',
-		'Dz' => 'ǲ',
-		'dz' => 'ǳ',
-		'DŽ' => 'Ǆ',
-		'Dž' => 'ǅ',
-		'dž' => 'ǆ',
-		'ffi' => 'ﬃ',
-		'ffl' => 'ﬄ',
-		'ff' => 'ﬀ',
-		'fi' => 'ﬁ',
-		'fl' => 'ﬂ',
-		'IJ' => 'Ĳ',
-		'ij' => 'ĳ',
-		'LJ' => 'Ǉ',
-		'Lj' => 'ǈ',
-		'lj' => 'ǉ',
-		'NJ' => 'Ǌ',
-		'Nj' => 'ǋ',
-		'nj' => 'ǌ',
-		'OE' => 'Œ',
-		'OO' => 'Ꝏ',
-		'oo' => 'ꝏ',
-		'ft' => 'ﬅ',
-		'ue' => 'ᵫ' //weird looking in twitter
-	];
-
+	/** @var array Case insensitive ligatures */
+	private static $ligaturesEx = [];
+	private static $ligatures = [];
 
 	public function __construct()
 	{
-		if (self::$alternatives == null) {
-			self::$alternatives = require('data.php');
-		}
+		self::$alternatives = require('data/alternatives.php');
+		self::$ligatures = require('data/ligatures.php');
+		self::$ligaturesEx = require('data/ligatures-extreme.php');
 	}
 
 
@@ -151,6 +114,7 @@ class Resolver
 		$opts = array_merge([
 			'noegg' => false,
 			'ligatures' => true,
+			'aggressive' => false,
 			'phrases' => true
 		], $opts);
 
@@ -162,7 +126,7 @@ class Resolver
 		$tweet = preg_replace("/\r\n/", "\n", $tweet);
 		$this->orig = $tweet;
 
-		$tweet = str_replace(["...", "->", "<-"], ["…", "→", "←"], $tweet);
+		//$tweet = str_replace(["...", "->", "<-"], ["…", "→", "←"], $tweet);
 
 		if (!$opts['noegg']) {
 			// *** Safeguards ***
@@ -187,7 +151,7 @@ class Resolver
 			}
 		}
 
-		if (count($this->wordbuf)) {
+		if (mb_strlen($this->wordbuf)) {
 			switch ($this->coll) {
 				case 'email':
 				case 'hash':
@@ -209,25 +173,34 @@ class Resolver
 		if ($opts['phrases']) $this->combinePhrases();
 		$this->findAlternatives();
 
-		if ($opts['ligatures']) $this->applyLigatures();
+		if ($opts['ligatures']) {
+			$this->applyLigatures($opts['aggressive']);
+		}
 
 		$this->makeShort();
 
 		$this->totalLength = mb_strlen($this->orig) - $this->linkLenAdjust;
 	}
 
-	private function applyLigaturesDo($word)
+	private function applyLigaturesDo($word, $aggr=false)
 	{
-		return str_replace(array_keys(self::$ligatures), array_values(self::$ligatures), $word);
+		$res = str_replace(array_keys(self::$ligatures), array_values(self::$ligatures), $word);
+
+		if ($aggr) {
+			$res = str_ireplace(array_keys(self::$ligaturesEx), array_values(self::$ligaturesEx), $res);
+		}
+
+		return $res;
 	}
 
-	private function applyLigatures()
+	private function applyLigatures($aggressive=false)
 	{
 		foreach ($this->tokens as &$tok) {
-			if ($tok instanceof WordToken) {
+			if ($tok instanceof WordToken || $tok instanceof FillerToken) {
 				//echo get_class($tok)."\n";
 				foreach ($tok->options as $i => $opt) {
-					$opt = $this->applyLigaturesDo($opt);
+					$opt = $this->applyLigaturesDo($opt, $aggressive);
+
 					$tok->options[$i] = $opt;
 					//echo $opt;
 				}
@@ -359,7 +332,7 @@ class Resolver
 	private function makeShort()
 	{
 		foreach ($this->tokens as $i => $t) {
-			if ($t instanceof WordToken) {
+			if (!empty($t->options)) {
 				usort($t->options, function($a, $b) {
 					return mb_strlen($a) - mb_strlen($b);
 				});
@@ -457,18 +430,23 @@ class Resolver
 		}
 
 		if (in_array($this->coll, ['junk'])) {
-			if ((self::wordChar($ch) &  $ch != '\'') || in_array($ch, ['#', '@'])) {
+			if ((self::wordChar($ch) && !ctype_digit($ch) && $ch != '\'') || in_array($ch, ['#', '@'])) {
 				// end of junk, start of good stuff
 				$this->addToken(new FillerToken($this->wordbuf));
 				return false;
 			} else {
+				if ($ch == "\n") {
+					$this->addToken(new FillerToken($this->wordbuf));
+					return false;
+				}
+
 				$this->wordbuf .= $ch; // append it
 				return true;
 			}
 		}
 
 		if (self::wordChar($ch)) {
-			if ($this->coll == 'junk') {
+			if ($this->coll == 'junk' && !ctype_digit($ch) ) {
 				// end of junk
 				$this->addToken(new FillerToken($this->wordbuf));
 			}

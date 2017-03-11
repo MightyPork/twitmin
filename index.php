@@ -7,21 +7,25 @@ $result = '';
 $original = '';
 
 $ligatures = isset($_POST['ligatures']) ? !!$_POST['ligatures'] : false;
+$aggressive = isset($_POST['aggressive']) ? !!$_POST['aggressive'] : false;
 
 if (isset($_POST['tweet']) && $_POST['tweet'] !== '') {
 	$resolver = new Resolver();
 	$resolver->process($_POST['tweet'], [
 		// Options
-		'ligatures' => $ligatures
+		'ligatures' => $ligatures,
+		'aggressive' => $aggressive,
 	]);
 
 	$result = implode('', array_map(function (Token $t) {
 		return ($t instanceof WordToken) ? $t->options[0] : $t->str;
 	}, $resolver->tokens));
+} else {
+	// no tweet - defaults for ckboxes
+	$ligatures = true;
 }
 
-function e($s)
-{
+function e($s) {
 	return htmlspecialchars($s, ENT_HTML5 | ENT_QUOTES);
 }
 
@@ -56,6 +60,8 @@ function e($s)
 				<div class="Options">
 					<input type="checkbox" value='1' name="ligatures" id="ligatures" <?=$ligatures?'checked':''?>>&nbsp;<!--
 					--><label for="ligatures">Ligatures</label>
+					<input type="checkbox" value='1' name="aggressive" id="aggressive" <?=$aggressive?'checked':''?>>&nbsp;<!--
+					--><label for="aggressive">Extreme lig.</label>
 					<span class="lbl-right"><span class="btn" id="compress-btn">GO!</span></span>
 				</div>
 			</form>
@@ -68,15 +74,15 @@ function e($s)
 				<div class="Output">
 					<?php
 					foreach ($resolver->tokens as $i => $tok) {
-						if ($tok instanceof WordToken) {
+						if ($tok instanceof WordToken || $tok instanceof FillerToken) {
 							if(count($tok->options) > 1) {
 								echo "<span class='Word' data-tok_n=$i>";
 								echo "<span class='WVal'>".e($tok->options[0])."</span>";
 
 								echo "<span class='WordAlts hidden'>";
 								foreach ($tok->options as $j => $option) {
-									$eo = e($tok->options[$j]);
-									echo "<span class='WordAlt' data-alt_n='$j'>$eo</span>";
+									$eo = e($option);
+									echo "<span class='WordAlt' data-alt_n='$j'>'$eo' (".mb_strlen($option).")</span>";
 								}
 								echo "</span>";//alts
 								echo "</span>";
